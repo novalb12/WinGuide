@@ -114,9 +114,9 @@ function OverviewSection({ setActiveSection }: { setActiveSection: (section: str
 function GitSection() {
   const gitCommands = [
     "sudo apt install -y git",
-    'git config --global user.name "Your Name"',
-    'git config --global user.email "your.email@example.com"',
-    'ssh-keygen -t ed25519 -C "your.email@example.com"',
+    'git config --global user.name novalb12',
+    'git config --global user.email novalb65@gmail.com',
+    'ssh-keygen -t ed25519 -C "novalb65@gmail.com"',
   ]
 
   return (
