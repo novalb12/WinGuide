@@ -116,7 +116,6 @@ function GitSection() {
     "sudo apt install -y git",
     'git config --global user.name novalb12',
     'git config --global user.email novalb65@gmail.com',
-    'ssh-keygen -t ed25519 -C "novalb65@gmail.com"',
   ]
 
   return (
