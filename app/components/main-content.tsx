@@ -5,8 +5,9 @@ import { CommandBlock } from "./command-block"
 import { AppGrid } from "./app-grid"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { CheckCircle, AlertTriangle, Info } from "lucide-react"
+import { CheckCircle, AlertTriangle, Info, Loader2 } from "lucide-react"
 import { BatchFunction } from "./batch-function"
+import { useWindowsApps } from "@/hooks/use-windows-apps"
 
 interface MainContentProps {
   activeSection: string
@@ -247,169 +248,43 @@ sudo apt-get update`,
 }
 
 function WindowsAppsSection() {
-  const allWindowsApps = [
-    // Development Tools
-    {
-      name: "Android Studio",
-      id: "Google.AndroidStudio",
-      description: "Android development IDE",
-      category: "Development",
-    },
-    {
-      name: "Everything",
-      id: "voidtools.Everything",
-      description: "File search tool",
-      category: "Development",
-    },
-    {
-      name: "Git",
-      id: "Git.Git",
-      description: "Version control system",
-      category: "Development",
-    },
-    {
-      name: "Notepad++",
-      id: "Notepad++.Notepad++",
-      description: "Text editor",
-      category: "Development",
-    },
-    { 
-      name: "VLC media player",
-      id: "VideoLAN.VLC",
-      description: "Media player",
-      category: "Development",
-    },
-    { 
-      name: "WinRAR", 
-      id: "RARLab.WinRAR", 
-      description: "File archiver", 
-      category: "Development" 
-    },
-    { 
-      name: "Zoom", 
-      id: "Zoom.Zoom", 
-      description: "Video conferencing", 
-      category: "Development" 
-    },
-    {
-      name: "Logitech G Hub",
-      id: "Logitech.GHub",
-      description: "Logitech G Hub",
-      category: "Development",
-    },
-    {
-      name: "WinDirStat",
-      id: "WinDirStat.WinDirStat",
-      description: "Disk space analyzer",
-      category: "Development",
-    },
-    { 
-      name: "Node.js",
-      id: "OpenJS.NodeJS",
-      description: "JavaScript runtime",
-      category: "Development"
-    },
-    {
-      name: "Python",
-      id: "Python.Python.3.12",
-      description: "Python programming language",
-      category: "Development",
-    },
-    {
-      name: "Google Chrome",
-      id: "Google.Chrome",
-      description: "Popular web browser",
-      category: "Browsers",
-    },
-    {
-      name: "Adobe Acrobat Reader",
-      id: "Adobe.Acrobat.Reader.64-bit",
-      description: "PDF reader",
-      category: "Development",
-    },
-    {
-      name: "Visual Studio Code",
-      id: "Microsoft.VisualStudioCode",
-      description: "Code editor",
-      category: "Development",
-    },
-    {
-      name: "Putty",
-      id: "putty.putty",
-      description: "SSH client",
-      category: "Development",
-    },
-    {
-      name: "Internet Download Manager",
-      id: "Tonec.InternetDownloadManager",
-      description: "Download manager",
-      category: "Development",
-    },
-    {
-      name: "Razer Synapse",
-      id: "RazerInc.RazerInstaller.Synapse4",
-      description: "Razer device management",
-      category: "Development",
-    },
-    {
-      name: "Steam",
-      id: "Valve.Steam",
-      description: "Gaming platform",
-      category: "Gaming",
-    },
-    {
-      name: "Epic Games Launcher",
-      id: "EpicGames.EpicGamesLauncher",
-      description: "Epic Games store",
-      category: "Gaming",
-    },
-    {
-      name: "PowerToys",
-      id: "Microsoft.PowerToys",
-      description: "Windows utilities",
-      category: "Utilities",
-    },
-    {
-      name: "Reolink",
-      id: "Reolink.Reolink",
-      description: "Reolin",
-      category: "Utilities",
-    },
-    {
-      name: "Discord",
-      id: "Discord.Discord",
-      description: "Voice and text chat",
-      category: "Productivity",
-    },
-    {
-      name: "Postman",
-      id: "Postman.Postman",
-      description: "API testing tool",
-      category: "Development",
-    },
-    {
-      name: "Telegram",
-      id: "Telegram.TelegramDesktop",
-      description: "Telegram desktop",
-      category: "Productivity",
-    },
-    {
-      name: "Cursor",
-      id: "Anysphere.Cursor",
-      description: "Cursor",
-      category: "Productivity",
-    },
-    {
-      name: "Notepad++",
-      id: "Notepad++.Notepad++",
-      description: "Text editor",
-      category: "Productivity",
-    },
-  ]
+  const { apps, loading, error } = useWindowsApps();
+
+  if (loading) {
+    return (
+      <div className="h-full max-w-full flex items-center justify-center">
+        <div className="flex items-center gap-2">
+          <Loader2 className="h-6 w-6 animate-spin" />
+          <span>Loading Windows applications...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="h-full max-w-full">
+        <Alert variant="destructive">
+          <AlertTriangle className="h-4 w-4" />
+          <AlertDescription>
+            Failed to load Windows applications: {error}
+          </AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
+
+  // Transform database apps to match the expected format for AppGrid
+  const transformedApps = apps.map(app => ({
+    name: app.name,
+    id: app.winget_id,
+    description: app.description,
+    category: app.category,
+  }));
 
   return (
     <div className="h-full max-w-full">
-      <AppGrid title="All Windows Applications" apps={allWindowsApps} category="all-windows-apps" />
+      <AppGrid title="All Windows Applications" apps={transformedApps} category="all-windows-apps" />
     </div>
   )
 }
