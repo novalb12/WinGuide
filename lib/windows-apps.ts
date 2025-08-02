@@ -12,7 +12,7 @@ export async function getAllWindowsApps(): Promise<WindowsApp[]> {
         category,
         created_at,
         updated_at
-      FROM windows_apps 
+      FROM winguide.windows_apps 
       ORDER BY category, name
     `;
     
@@ -34,7 +34,7 @@ export async function getWindowsAppsByCategory(category: string): Promise<Window
         category,
         created_at,
         updated_at
-      FROM windows_apps 
+      FROM winguide.windows_apps 
       WHERE category = ${category}
       ORDER BY name
     `;
@@ -50,7 +50,7 @@ export async function getWindowsAppCategories(): Promise<string[]> {
   try {
     const categories = await sql`
       SELECT DISTINCT category 
-      FROM windows_apps 
+      FROM winguide.windows_apps 
       ORDER BY category
     `;
     
